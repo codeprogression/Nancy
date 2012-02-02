@@ -1,3 +1,5 @@
+using System.IdentityModel.Claims;
+
 namespace Nancy.Demo.Authentication
 {
     using System;
@@ -48,17 +50,17 @@ namespace Nancy.Demo.Authentication
         /// </summary>
         /// <param name="userName">Current username</param>
         /// <returns>IEnumerable of claims</returns>
-        private static IEnumerable<string> BuildClaims(string userName)
+        private static ClaimSet BuildClaims(string userName)
         {
-            var claims = new List<string>();
+            var claims = new List<Claim>();
 
             // Only bob can have access to SuperSecure
             if (String.Equals(userName, "bob", StringComparison.InvariantCultureIgnoreCase))
             {
-                claims.Add("SuperSecure");
+                claims.Add(DemoClaims.SuperSecureRole);
             }
 
-            return claims;
+            return new DefaultClaimSet(claims);
         }
     }
 }

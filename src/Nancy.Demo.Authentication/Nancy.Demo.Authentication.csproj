@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -70,6 +70,8 @@
   <ItemGroup>
     <Reference Include="Microsoft.CSharp">
     </Reference>
+    <Reference Include="System.IdentityModel" />
+    <Reference Include="System.Security" />
     <Reference Include="System.Web.DynamicData">
     </Reference>
     <Reference Include="System.Web.ApplicationServices">
@@ -115,6 +117,7 @@
     </Compile>
     <Compile Include="AuthenticationBootstrapper.cs" />
     <Compile Include="AnotherVerySecureModule.cs" />
+    <Compile Include="DemoClaims.cs" />
     <Compile Include="DemoUserIdentity.cs" />
     <Compile Include="MainModule.cs" />
     <Compile Include="Models\UserModel.cs" />

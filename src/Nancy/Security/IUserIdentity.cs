@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.IdentityModel.Claims;
 
 namespace Nancy.Security
 {
     public interface IUserIdentity
     {
         string UserName { get; set; }
-        IEnumerable<string> Claims { get; set; } 
+        ClaimSet Claims { get; set; }
     }
 }

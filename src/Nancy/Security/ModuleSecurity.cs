@@ -1,7 +1,8 @@
+using System.IdentityModel.Claims;
+
 namespace Nancy.Security
 {
     using System;
-    using System.Collections.Generic;
     using System.Linq;
 
     /// <summary>
@@ -23,7 +24,16 @@ namespace Nancy.Security
         /// </summary>
         /// <param name="module">Module to enable</param>
         /// <param name="requiredClaims">Claim(s) required</param>
-        public static void RequiresClaims(this NancyModule module, IEnumerable<string> requiredClaims)
+        public static void RequiresClaims(this NancyModule module, params Claim[] requiredClaims)
+        {
+            RequiresClaims(module, new DefaultClaimSet(requiredClaims));
+        }
+        /// <summary>
+        /// This module requires authentication and certain claims to be present.
+        /// </summary>
+        /// <param name="module">Module to enable</param>
+        /// <param name="requiredClaims">Claim(s) required</param>
+        public static void RequiresClaims(this NancyModule module, ClaimSet requiredClaims)
         {
             module.Before.AddItemToEndOfPipeline(RequiresAuthentication);
             module.Before.AddItemToEndOfPipeline(RequiresClaims(requiredClaims));
@@ -34,7 +44,7 @@ namespace Nancy.Security
         /// </summary>
         /// <param name="module">Module to enable</param>
         /// <param name="isValid">Claims validator</param>
-        public static void RequiresValidatedClaims(this NancyModule module, Func<IEnumerable<string>, bool> isValid)
+        public static void RequiresValidatedClaims(this NancyModule module, Func<ClaimSet, bool> isValid)
         {
             module.Before.AddItemToStartOfPipeline(RequiresValidatedClaims(isValid));
             module.Before.AddItemToStartOfPipeline(RequiresAuthentication);
@@ -62,13 +72,14 @@ namespace Nancy.Security
         /// </summary>
         /// <param name="claims">Required claims</param>
         /// <returns>Before hook delegate</returns>
-        private static Func<NancyContext, Response> RequiresClaims(IEnumerable<string> claims)
+        private static Func<NancyContext, Response> RequiresClaims(ClaimSet claims)
         {
             return (ctx) =>
                        {
                            Response response = null;
                            if (ctx.CurrentUser == null
                                || ctx.CurrentUser.Claims == null
+                               || !ctx.CurrentUser.Claims.Any()
                                || claims.Any(c => !ctx.CurrentUser.Claims.Contains(c)))
                            {
                                response = new Response {StatusCode = HttpStatusCode.Forbidden};
@@ -83,7 +94,7 @@ namespace Nancy.Security
         /// </summary>
         /// <param name="isValid">Is valid delegate</param>
         /// <returns>Pipeline item delegate</returns>
-        private static Func<NancyContext, Response> RequiresValidatedClaims(Func<IEnumerable<string>, bool> isValid)
+        private static Func<NancyContext, Response> RequiresValidatedClaims(Func<ClaimSet, bool> isValid)
         {
             return (ctx) =>
                        {
@@ -91,6 +102,7 @@ namespace Nancy.Security
                            var userClaims = ctx.CurrentUser.Claims;
                            if (ctx.CurrentUser == null
                                || ctx.CurrentUser.Claims == null
+                               || !ctx.CurrentUser.Claims.Any()
                                || !isValid(ctx.CurrentUser.Claims))
                            {
                                response = new Response {StatusCode = HttpStatusCode.Forbidden};

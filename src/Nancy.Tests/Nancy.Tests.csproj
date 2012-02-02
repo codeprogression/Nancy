@@ -73,6 +73,7 @@
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core">
     </Reference>
+    <Reference Include="System.IdentityModel" />
     <Reference Include="System.Web">
     </Reference>
     <Reference Include="FakeItEasy, Version=1.7.4109.1, Culture=neutral, PublicKeyToken=eff28e2146d5fd2c">

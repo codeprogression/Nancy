@@ -12,7 +12,7 @@ namespace Nancy.Demo.Authentication
     {
         public VerySecureModule() : base("/superSecureToo")
         {
-            this.RequiresValidatedClaims(c => c.Contains("SuperSecure"));
+            this.RequiresValidatedClaims(c => c.Contains(DemoClaims.SuperSecureRole));
 
             Get["/"] = x => {
                 var model = new UserModel(Context.CurrentUser.UserName);
