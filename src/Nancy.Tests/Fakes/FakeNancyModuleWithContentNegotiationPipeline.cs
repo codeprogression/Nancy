@@ -73,6 +73,7 @@ namespace Nancy.Tests.Fakes
                 if (request == null || request.Headers == null || request.Headers.Accept == null)
                     return;
 
+                if (!ctx.Items.ContainsKey("Content-Negotiation")) return;
                 var responses = (List<Response>)ctx.Items["Content-Negotiation"];
                 if (responses == null) return;
                 responses.Insert(0, new Response
