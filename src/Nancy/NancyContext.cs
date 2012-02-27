@@ -57,19 +57,6 @@ namespace Nancy
         /// Gets or sets the outgoing response
         /// </summary>
         public Response Response { get; set; }
-/*
-
-        Response GetNegotiatedResponse()
-        {
-            
-        }
-
-        /// <summary>
-        /// Gets the Responses collection
-        /// </summary>
-        public IList<Response> Responses { get; private set; }
-
-*/
 
         /// <summary>
         /// Gets or sets the current user
