@@ -98,6 +98,7 @@
     <Compile Include="Extensions\ResponseExtensions.cs" />
     <Compile Include="Fakes\FakeNancyModuleNoRoutes.cs" />
     <Compile Include="Fakes\FakeNancyModuleWithBasePath.cs" />
+    <Compile Include="Fakes\FakeNancyModuleWithContentNegotiationPipeline.cs" />
     <Compile Include="Fakes\FakeNancyModuleWithDependency.cs" />
     <Compile Include="Fakes\FakeNancyModuleWithoutBasePath.cs" />
     <Compile Include="Fakes\FakeNancyModuleWithPreAndPostHooks.cs" />
@@ -110,6 +111,7 @@
     <Compile Include="Fakes\Person.cs" />
     <Compile Include="Fakes\ViewModel.cs" />
     <Compile Include="Unit\Bootstrapper\PipelinesFixture.cs" />
+    <Compile Include="Unit\ContentNegotiation\DefaultContentNegotiationFixture.cs" />
     <Compile Include="Unit\Conventions\DefaultStaticContentsConventionsFixture.cs" />
     <Compile Include="Unit\DefaultNancyBootstrapperFixture.cs" />
     <Compile Include="Unit\DefaultResponseFormatterFactoryFixture.cs" />

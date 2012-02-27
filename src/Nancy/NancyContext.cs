@@ -19,7 +19,6 @@ namespace Nancy
         {
             this.Items = new Dictionary<string, object>();
             this.Trace = new RequestTrace();
-            
             // TODO - potentially additional logic to lock to ip etc?
             this.ControlPanelEnabled = true;
         }
@@ -58,6 +57,19 @@ namespace Nancy
         /// Gets or sets the outgoing response
         /// </summary>
         public Response Response { get; set; }
+/*
+
+        Response GetNegotiatedResponse()
+        {
+            
+        }
+
+        /// <summary>
+        /// Gets the Responses collection
+        /// </summary>
+        public IList<Response> Responses { get; private set; }
+
+*/
 
         /// <summary>
         /// Gets or sets the current user

@@ -1,0 +1,108 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using Nancy.Responses;
+
+namespace Nancy.Tests.Fakes
+{
+    public class FakeNancyModuleWithContentNegotiationPipeline : NancyModule
+    {
+        public FakeNancyModuleWithContentNegotiationPipeline()
+        {
+            Get["/negotiated_html_xml"] = x =>
+                {
+                    var response = new Response();
+                    var responses = new List<Response>
+                        {
+                            new XmlResponse<object>(new object(), "application/xml",new DefaultXmlSerializer())
+                        };
+
+                    Context.Items.Add("Content-Negotiation", responses);
+                    return response;
+                };
+
+            Get["/negotiated_text_xml"] = x =>
+                {
+                    var response = new Response { ContentType = "text/plain" };
+                    var responses = new List<Response>
+                        {
+                            new XmlResponse<object>(new object(), "application/xml", new DefaultXmlSerializer())
+                        };
+                    Context.Items.Add("Content-Negotiation", responses);
+                    return response;
+                };
+
+            Get["/negotiated_text_json"] = x =>
+                {
+                    var response = new Response { ContentType = "text/plain" };
+                    var responses = new List<Response>
+                        {
+                            new JsonResponse(new object(), new DefaultJsonSerializer())
+                        };
+                    Context.Items.Add("Content-Negotiation", responses);
+                    return response;
+                };
+
+            Get["/negotiated_html_png_gif"] = x =>
+                {
+                    var response = new Response();
+                    var responses = new List<Response>
+                        {
+                            new Response { ContentType = "image/png" },
+                            new Response { ContentType = "image/gif" }
+                        };
+                    Context.Items.Add("Content-Negotiation", responses);
+                    return response;
+                };
+            After += new ContentNegotiationPipelineItem();
+        }
+    }
+
+    public class ContentNegotiationPipelineItem : PipelineItem<Action<NancyContext>>
+    {
+
+        public ContentNegotiationPipelineItem()
+            : base("Content Negotiation", action)
+        {
+        }
+
+        static readonly Action<NancyContext> action = ctx =>
+            {
+
+                var request = ctx.Request;
+                if (request == null || request.Headers == null || request.Headers.Accept == null)
+                    return;
+
+                var responses = (List<Response>)ctx.Items["Content-Negotiation"];
+                if (responses == null) return;
+                responses.Insert(0, new Response
+                    {
+                        Contents = ctx.Response.Contents,
+                        ContentType = ctx.Response.ContentType,
+                        Headers = ctx.Response.Headers,
+                        StatusCode = ctx.Response.StatusCode
+                    });
+                foreach (var cookie in ctx.Response.Cookies)
+                    responses[0].AddCookie(cookie);
+
+                foreach (var contentType in request.Headers.Accept.Select(x => x.Item1))
+                {
+                    var indexOf = contentType.IndexOf("/", StringComparison.Ordinal);
+                    if (contentType == "*/*")
+                        return;
+
+                    var response = contentType.EndsWith("/*")
+                                       ? responses.FirstOrDefault(
+                                           x => x.ContentType.StartsWith(contentType.Substring(0, indexOf)))
+                                       : responses.FirstOrDefault(x => x.ContentType == contentType);
+
+                    if (response != null)
+                    {
+                        ctx.Response = response;
+                        break;
+                    }
+                }
+            };
+
+    }
+}
