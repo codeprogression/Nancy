@@ -25,6 +25,7 @@ namespace Nancy
             this.Headers = new Dictionary<string, string>();
             this.StatusCode = HttpStatusCode.OK;
             this.Cookies = new List<INancyCookie>(2);
+            this.Responses = new List<Response>();
         }
 
         /// <summary>
@@ -54,6 +55,8 @@ namespace Nancy
         public HttpStatusCode StatusCode { get; set; }
 
         public IList<INancyCookie> Cookies { get; private set; }
+
+        public IList<Response> Responses { get; private set; }
         
         public Response AddCookie(string name, string value)
         {
