@@ -81,13 +81,17 @@ namespace Nancy
                         ContentType = null,
                         StatusCode = HttpStatusCode.UnsupportedMediaType
                     };
+
             if (formatter.Context.Request==null || formatter.Context.Request.Headers == null || formatter.Context.Request.Headers.Accept == null)
                 return defaultResponse;
+         
             var accept = formatter.Context.Request.Headers.Accept;
-            foreach (var contentType in accept.Select(x=>x.Item1).DefaultIfEmpty())
+            var weightedContentTypes = accept.Select(x => x.Item1).DefaultIfEmpty();
+
+            foreach (var contentType in weightedContentTypes)
             {
-                if (defaultResponse.ContentType == contentType)
-                    return defaultResponse;
+                if (defaultResponse.ContentType == contentType || contentType == "*/*") return defaultResponse;
+
                 var serializer = formatter.Serializers.FirstOrDefault(x => x.CanSerialize(contentType));
                 if (serializer != null && !(contentType.EndsWith("xml") && model.IsAnonymousType()))
                 {   
@@ -98,8 +102,6 @@ namespace Nancy
                             StatusCode = statusCode
                         };
                 }
-                if (contentType == "*/*")
-                    return defaultResponse;
             }
             return defaultResponse;
         }

@@ -10,8 +10,7 @@ namespace Nancy.Tests.Functional.Tests
 {
     public class ConnegTests
     {
-          private readonly INancyBootstrapper bootstrapper;
-
+        private readonly INancyBootstrapper bootstrapper;
         private readonly Browser browser;
 
         public ConnegTests()
