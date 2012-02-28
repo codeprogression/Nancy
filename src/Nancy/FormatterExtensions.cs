@@ -1,3 +1,6 @@
+using System.Collections.Generic;
+using Nancy.ViewEngines;
+
 namespace Nancy
 {
     using System;
@@ -68,6 +71,37 @@ namespace Nancy
         public static Response FromStream(this IResponseFormatter formatter, Func<Stream> streamDelegate, string contentType)
         {
             return new StreamResponse(streamDelegate, contentType);
+        }
+
+        public static Response AsConneg<TModel>(this IResponseFormatter formatter, TModel model, HttpStatusCode statusCode = HttpStatusCode.OK, Response defaultResponse = null)
+        {
+            if (defaultResponse == null)
+                defaultResponse = new Response
+                    {
+                        ContentType = null,
+                        StatusCode = HttpStatusCode.UnsupportedMediaType
+                    };
+            if (formatter.Context.Request==null || formatter.Context.Request.Headers == null || formatter.Context.Request.Headers.Accept == null)
+                return defaultResponse;
+            var accept = formatter.Context.Request.Headers.Accept;
+            foreach (var contentType in accept.Select(x=>x.Item1).DefaultIfEmpty())
+            {
+                if (defaultResponse.ContentType == contentType)
+                    return defaultResponse;
+                var serializer = formatter.Serializers.FirstOrDefault(x => x.CanSerialize(contentType));
+                if (serializer != null && !(contentType.EndsWith("xml") && model.IsAnonymousType()))
+                {   
+                    return new Response
+                        {
+                            Contents = stream => serializer.Serialize(contentType, model, stream),
+                            ContentType = contentType,
+                            StatusCode = statusCode
+                        };
+                }
+                if (contentType == "*/*")
+                    return defaultResponse;
+            }
+            return defaultResponse;
         }
     }
 }
