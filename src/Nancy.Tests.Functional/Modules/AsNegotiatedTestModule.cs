@@ -4,7 +4,7 @@ namespace Nancy.Tests.Functional.Modules
 {
     public class AsNegotiatedTestModule : NancyModule
     {
-        public AsNegotiatedTestModule() : base("/conneg")
+        public AsNegotiatedTestModule() : base("/negotiated")
         {
             Get["/string"] = x => "Normal Response";
             Get["/view"] = p =>

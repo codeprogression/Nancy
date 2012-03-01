@@ -37,7 +37,7 @@ namespace Nancy.Tests.Functional.Tests
         [Fact]
         public void Ensure_that_conneg_hook_does_not_affect_normal_responses()
         {
-            var result = browser.Get("/conneg/string", c =>
+            var result = browser.Get("/negotiated/string", c =>
             {
                 c.HttpRequest();
             });
@@ -49,7 +49,7 @@ namespace Nancy.Tests.Functional.Tests
         [Fact]
         public void Ensure_that_accept_header_causes_view_to_return()
         {
-            var result = browser.Get("/conneg/view", c =>
+            var result = browser.Get("/negotiated/view", c =>
             {
                 c.HttpRequest();
                 c.Header("Accept", "text/html,application/json;q=0.9,application/xml;q=0.8");
