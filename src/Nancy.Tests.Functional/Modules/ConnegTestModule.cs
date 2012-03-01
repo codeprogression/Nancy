@@ -1,4 +1,6 @@
-﻿namespace Nancy.Tests.Functional.Modules
+﻿using System;
+
+namespace Nancy.Tests.Functional.Modules
 {
     public class ConnegTestModule : NancyModule
     {
@@ -8,7 +10,7 @@
             Get["/view"] = p =>
                 {
                     var model = new Person("John", "Doe");
-                    return Response.AsConneg(model, defaultResponse: View[model]);
+                    return Response.AsConneg(model, defaultResponse: new Tuple<Func<Response>, string>(()=>View[model],"text/html"));
                 };
         }
     }

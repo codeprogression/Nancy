@@ -52,12 +52,26 @@ namespace Nancy.Tests.Functional.Tests
             var result = browser.Get("/conneg/view", c =>
             {
                 c.HttpRequest();
-                c.Header("Accept","text/html,application/json;0.9,application/xml;q=0.8");
+                c.Header("Accept", "text/html,application/json;q=0.9,application/xml;q=0.8");
             });
 
             Assert.Equal(HttpStatusCode.OK, result.StatusCode);
             Assert.Equal("text/html", result.Context.Response.ContentType);
             Assert.Equal("John Doe", result.Body.AsString());
+        }
+
+        [Fact]
+        public void Ensure_that_accept_header_causes_json_to_return()
+        {
+            var result = browser.Get("/conneg/view", c =>
+            {
+                c.HttpRequest();
+                c.Header("Accept", "text/html;q=0.7,application/json;q=0.9,application/xml;q=0.8");
+            });
+
+            Assert.Equal(HttpStatusCode.OK, result.StatusCode);
+            Assert.Equal("application/json", result.Context.Response.ContentType);
+            Assert.Equal("{\"FirstName\":\"John\",\"LastName\":\"Doe\"}", result.Body.AsString());
         }
     }
 }
