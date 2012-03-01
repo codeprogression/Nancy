@@ -63,9 +63,9 @@
     <Compile Include="..\SharedAssemblyInfo.cs">
       <Link>Properties\SharedAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="Modules\ConnegTestModule.cs" />
+    <Compile Include="Modules\AsNegotiatedTestModule.cs" />
     <Compile Include="Modules\JsonpTestModule.cs" />
-    <Compile Include="Tests\ConnegTests.cs" />
+    <Compile Include="Tests\AsNegotiatedTests.cs" />
     <Compile Include="Tests\JsonpTests.cs" />
     <Compile Include="Tests\StaticContentTests.cs" />
   </ItemGroup>

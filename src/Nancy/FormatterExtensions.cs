@@ -73,7 +73,7 @@ namespace Nancy
             return new StreamResponse(streamDelegate, contentType);
         }
 
-        public static Response AsConneg<TModel>(this IResponseFormatter formatter, TModel model, HttpStatusCode statusCode = HttpStatusCode.OK, Tuple<Func<Response>, string> defaultResponse = null)
+        public static Response AsNegotiated<TModel>(this IResponseFormatter formatter, TModel model, HttpStatusCode statusCode = HttpStatusCode.OK, Tuple<Func<Response>, string> defaultResponse = null)
         {
             
             if (defaultResponse == null)

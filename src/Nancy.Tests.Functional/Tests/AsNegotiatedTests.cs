@@ -8,12 +8,12 @@ using Xunit;
 
 namespace Nancy.Tests.Functional.Tests
 {
-    public class ConnegTests
+    public class AsNegotiatedTests
     {
         private readonly INancyBootstrapper bootstrapper;
         private readonly Browser browser;
 
-        public ConnegTests()
+        public AsNegotiatedTests()
         {
             Func<IRootPathProvider> rootPathProvider = () =>
                 {
@@ -27,7 +27,7 @@ namespace Nancy.Tests.Functional.Tests
             this.bootstrapper = new ConfigurableBootstrapper(
                 configuration =>
                     {
-                        configuration.Modules(new[] { typeof(ConnegTestModule) });
+                        configuration.Modules(new[] { typeof(AsNegotiatedTestModule) });
                         configuration.RootPathProvider(rootPathProvider.Invoke());
                     });
             

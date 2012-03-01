@@ -2,15 +2,15 @@
 
 namespace Nancy.Tests.Functional.Modules
 {
-    public class ConnegTestModule : NancyModule
+    public class AsNegotiatedTestModule : NancyModule
     {
-        public ConnegTestModule() : base("/conneg")
+        public AsNegotiatedTestModule() : base("/conneg")
         {
             Get["/string"] = x => "Normal Response";
             Get["/view"] = p =>
                 {
                     var model = new Person("John", "Doe");
-                    return Response.AsConneg(model, defaultResponse: new Tuple<Func<Response>, string>(()=>View[model],"text/html"));
+                    return Response.AsNegotiated(model, defaultResponse: new Tuple<Func<Response>, string>(()=>View[model],"text/html"));
                 };
         }
     }

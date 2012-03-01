@@ -10,13 +10,13 @@ namespace Nancy.Tests.Unit
     using Nancy.Tests.Fakes;
     using Xunit;
 
-    public class ConnegFormatterExtensionsFixture
+    public class AsNegotiatedFormatterExtensionsFixture
     {
         private readonly IResponseFormatter formatter;
         private readonly Person model;
         readonly NancyContext context = new NancyContext();
 
-        public ConnegFormatterExtensionsFixture()
+        public AsNegotiatedFormatterExtensionsFixture()
         {
             this.formatter = A.Fake<IResponseFormatter>();
             A.CallTo(() => this.formatter.Context).Returns(context);
@@ -28,7 +28,7 @@ namespace Nancy.Tests.Unit
         [Fact]
         public void Should_return_a_response_with_status_code_415_UnsupportedMediaType()
         {
-            var response = this.formatter.AsConneg(model);
+            var response = this.formatter.AsNegotiated(model);
             response.StatusCode.ShouldEqual(HttpStatusCode.UnsupportedMediaType);
         }
 
@@ -39,7 +39,7 @@ namespace Nancy.Tests.Unit
                 {
                     {"Accept",new[]{"application/json,application/xml;q=0.9"}}
                 });
-            var response = this.formatter.AsConneg(model);
+            var response = this.formatter.AsNegotiated(model);
             response.ContentType.ShouldEqual("application/json");
         }
 
@@ -50,7 +50,7 @@ namespace Nancy.Tests.Unit
                 {
                     {"Accept",new[]{"application/xml,application/json;q=0.9"}}
                 });
-            var response = this.formatter.AsConneg(model);
+            var response = this.formatter.AsNegotiated(model);
             response.ContentType.ShouldEqual("application/xml");
         }
 
@@ -62,7 +62,7 @@ namespace Nancy.Tests.Unit
                 {
                     {"Accept",new[]{"application/json,application/xml;q=0.9"}}
                 });
-            var response = this.formatter.AsConneg(model);
+            var response = this.formatter.AsNegotiated(model);
             using (var stream = new MemoryStream())
 
             {
@@ -78,7 +78,7 @@ namespace Nancy.Tests.Unit
                 {
                     {"Accept",new[]{"application/xml,application/json;q=0.9"}}
                 });
-            var response = this.formatter.AsConneg(model);
+            var response = this.formatter.AsNegotiated(model);
             using (var stream = new MemoryStream())
             {
                 response.Contents(stream);
@@ -96,7 +96,7 @@ namespace Nancy.Tests.Unit
                 {
                     {"Accept",new[]{"application/json,application/xml;q=0.9"}}
                 });
-            var response = this.formatter.AsConneg<Person>(null);
+            var response = this.formatter.AsNegotiated<Person>(null);
           
             using (var stream = new MemoryStream())
             {
@@ -112,7 +112,7 @@ namespace Nancy.Tests.Unit
                 {
                     {"Accept",new[]{"application/xml,application/json;q=0.9"}}
                 });
-            var response = this.formatter.AsConneg<Person>(null);
+            var response = this.formatter.AsNegotiated<Person>(null);
 
             var expected = @"<?xml version=""1.0""?><Person xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"" xsi:nil=""true"" />";
             using (var stream = new MemoryStream())
@@ -129,7 +129,7 @@ namespace Nancy.Tests.Unit
                 {
                     {"Accept",new[]{"application/json,application/xml;q=0.9"}}
                 });
-            var response = this.formatter.AsConneg(new { type = typeof(string) });
+            var response = this.formatter.AsNegotiated(new { type = typeof(string) });
           
             using (var stream = new MemoryStream())
             {
@@ -145,7 +145,7 @@ namespace Nancy.Tests.Unit
                 {
                     {"Accept",new[]{"application/xml,application/json;q=0.9"}}
                 });
-            var response = this.formatter.AsConneg(new { type = typeof(string) });
+            var response = this.formatter.AsNegotiated(new { type = typeof(string) });
 
             using (var stream = new MemoryStream())
             {
@@ -162,7 +162,7 @@ namespace Nancy.Tests.Unit
                 {
                     {"Accept",new[]{"application/json,application/xml;q=0.9"}}
                 });
-            var response = this.formatter.AsConneg(new { foo = "bar" }, HttpStatusCode.InternalServerError);
+            var response = this.formatter.AsNegotiated(new { foo = "bar" }, HttpStatusCode.InternalServerError);
             Assert.Equal(response.StatusCode, HttpStatusCode.InternalServerError);
         }
     }
