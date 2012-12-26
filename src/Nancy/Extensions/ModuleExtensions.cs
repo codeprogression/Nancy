@@ -39,13 +39,27 @@ namespace Nancy.Extensions
 
         public static string GetModulePath(this NancyModule module, NancyContext context)
         {
-            if (string.IsNullOrEmpty(module.ModulePath)) return string.Empty;
+            if (string.IsNullOrEmpty(module.ModulePath))
+            {
+                return string.Empty;
+            }
+           
+            if (!module.ModulePath.Contains("{")        // module path with parameters
+                && !module.ModulePath.Contains("(?"))   // module path with regex
+            {
+                return module.ModulePath;
+            }
             var modulePath = module.ModulePath.StartsWith("/") ? module.ModulePath : "/" + module.ModulePath;
             var segments = modulePath.Split(new[] {"/"}, StringSplitOptions.RemoveEmptyEntries);
 
             var requestPath = context.Request.Path.StartsWith("/") ? context.Request.Path : "/" + context.Request.Path;
             var requestPathSegments = requestPath.Split(new[] {"/"}, StringSplitOptions.RemoveEmptyEntries);
 
+            if (requestPathSegments.Length<segments.Length)
+            {
+                return string.Empty;
+            }
+            
             return "/"+string.Join("/",requestPathSegments.Take(segments.Length));
         }
     }

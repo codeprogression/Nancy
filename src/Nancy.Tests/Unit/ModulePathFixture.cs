@@ -36,6 +36,13 @@ namespace Nancy.Tests.Unit
             {
             }
         }
+        class LongRegexPathModule: NancyModule
+        {
+            public LongRegexPathModule()
+                : base(@"/long/(?<path>[\w]+)/to/(?<resource>[\w]+)")
+            {
+            }
+        }
 
         class ComplexRegexPathModule : NancyModule
         {
@@ -162,6 +169,27 @@ namespace Nancy.Tests.Unit
 
             // Then
             name.ShouldEqual("/path/to/resource");
+            
+        }
+        [Fact]
+        public void should_return_empty_string_if_request_path_is_shorter_than_module_path()
+        {  
+            // Given
+
+            var request = A.Fake<Request>(x =>
+            {
+                x.Implements(typeof(IDisposable)); ;
+                x.WithArgumentsForConstructor(new[] { "GET", "long/path/to", "http" });
+            });
+            NancyModule module = new LongRegexPathModule();
+            module.Context = new NancyContext();
+            var context = new NancyContext { Request = request };
+
+            // When
+            var name = module.GetModulePath(context);
+
+            // Then
+            name.ShouldEqual(string.Empty);
             
         }
     }
