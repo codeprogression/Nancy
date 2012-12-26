@@ -6,6 +6,7 @@
             : base(@"/(?<name>[\w]+)")
         {
             Get["/test"] = _ => View["LocationTest"];
+            Get["/testconvention6"] = _ => View["ViewConvention6"];
         }
     }
 }

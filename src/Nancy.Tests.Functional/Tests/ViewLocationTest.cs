@@ -75,7 +75,7 @@ namespace Nancy.Tests.Functional.Tests
             // Given
             // When
             var response = browser.Get(
-                @"/viewconvention6/test",
+                @"/viewconvention6/testconvention6",
                 with =>
                 {
                     with.HttpRequest();
