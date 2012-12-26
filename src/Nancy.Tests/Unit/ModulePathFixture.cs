@@ -1,0 +1,168 @@
+using System;
+using FakeItEasy;
+
+namespace Nancy.Tests.Unit
+{
+    using Xunit;
+    using Nancy.Extensions;
+
+    public class ModulePathFixture
+    {
+        class BasicModule : NancyModule
+        {
+        }
+
+        class EmptyPathModule: NancyModule
+        {
+            public EmptyPathModule():base("/")
+            {
+            }
+        }
+        class BasicModuleWithEmptyPath: NancyModule
+        {
+            public BasicModuleWithEmptyPath():base("")
+            {
+            }
+        }
+        class DefinedPathModule: NancyModule
+        {
+            public DefinedPathModule():base("/defined")
+            {
+            }
+        }
+        class RegexPathModule: NancyModule
+        {
+            public RegexPathModule() : base(@"/(?<path>[\w]+)")
+            {
+            }
+        }
+
+        class ComplexRegexPathModule : NancyModule
+        {
+            public ComplexRegexPathModule()
+                : base(@"/(?<path>[\w]+)" + "/to" + @"/(?<resource>[\w]+)")
+            {
+            }
+        }
+        class ParameterizedPathModule : NancyModule
+        {
+            public ParameterizedPathModule()
+                : base(@"/{path}/to/{resource}/")
+            {
+            }
+        }
+
+        [Fact]
+        public void should_get_undefined_module_path()
+        {  
+            // Given
+            NancyModule module = new BasicModule();
+            var context = new NancyContext();
+
+            // When
+            var name = module.GetModulePath(context);
+
+            // Then
+            name.ShouldBeEmpty();
+            
+        }
+        [Fact]
+        public void should_get_empty_module_path()
+        {  
+            // Given
+            NancyModule module = new BasicModuleWithEmptyPath();
+            var context = new NancyContext();
+
+            // When
+            var name = module.GetModulePath(context);
+
+            // Then
+            name.ShouldEqual("");
+            
+        }
+        [Fact]
+        public void should_get_defined_path()
+        {
+            // Given
+
+            var request = A.Fake<Request>(x =>
+            {
+                x.Implements(typeof(IDisposable)); ;
+                x.WithArgumentsForConstructor(new[] { "GET", "/defined/path/to/resource", "http" });
+            });
+            NancyModule module = new DefinedPathModule();
+            var context = new NancyContext {Request = request};
+
+            // When
+            var name = module.GetModulePath(context);
+
+            // Then
+            name.ShouldEqual("/defined");
+            
+        }
+        [Fact]
+        public void should_evaluate_regex_path()
+        {  
+            // Given
+
+            var request = A.Fake<Request>(x =>
+            {
+                x.Implements(typeof(IDisposable)); ;
+                x.WithArgumentsForConstructor(new[] { "GET", "/path/to/resource", "http" });
+            });
+            NancyModule module = new RegexPathModule();
+            module.Context = new NancyContext();
+            var context = new NancyContext { Request = request };
+
+            // When
+            var name = module.GetModulePath(context);
+
+            // Then
+            name.ShouldEqual("/path");
+            
+        }
+        [Fact]
+        public void should_evaluate_complex_regex_path()
+        {  
+            // Given
+
+            var request = A.Fake<Request>(x =>
+            {
+                x.Implements(typeof(IDisposable)); ;
+                x.WithArgumentsForConstructor(new[] { "GET", "/path/to/resource", "http" });
+            });
+            NancyModule module = new ComplexRegexPathModule();
+            module.Context = new NancyContext();
+            var context = new NancyContext { Request = request };
+
+            // When
+            var name = module.GetModulePath(context);
+
+            // Then
+            name.ShouldEqual("/path/to/resource");
+            
+        }
+
+        [Fact]
+        public void should_evaluate_parameterized_path()
+        {  
+            // Given
+
+            var request = A.Fake<Request>(x =>
+            {
+                x.Implements(typeof(IDisposable)); ;
+                x.WithArgumentsForConstructor(new[] { "GET", "/path/to/resource", "http" });
+            });
+            NancyModule module = new ParameterizedPathModule();
+            module.Context = new NancyContext();
+            var context = new NancyContext { Request = request };
+
+            // When
+            var name = module.GetModulePath(context);
+
+            // Then
+            name.ShouldEqual("/path/to/resource");
+            
+        }
+    }
+}

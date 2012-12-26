@@ -36,5 +36,17 @@ namespace Nancy.Extensions
             return typeName;
         }
 
+
+        public static string GetModulePath(this NancyModule module, NancyContext context)
+        {
+            if (string.IsNullOrEmpty(module.ModulePath)) return string.Empty;
+            var modulePath = module.ModulePath.StartsWith("/") ? module.ModulePath : "/" + module.ModulePath;
+            var segments = modulePath.Split(new[] {"/"}, StringSplitOptions.RemoveEmptyEntries);
+
+            var requestPath = context.Request.Path.StartsWith("/") ? context.Request.Path : "/" + context.Request.Path;
+            var requestPathSegments = requestPath.Split(new[] {"/"}, StringSplitOptions.RemoveEmptyEntries);
+
+            return "/"+string.Join("/",requestPathSegments.Take(segments.Length));
+        }
     }
 }
