@@ -36,7 +36,13 @@ namespace Nancy.Extensions
             return typeName;
         }
 
-
+        /// <summary>
+        /// Derives the module path from the request path when the module path has parameterized
+        /// or regex path variables. 
+        /// </summary>
+        /// <param name="module">The current module</param>
+        /// <param name="context">The current context</param>
+        /// <returns>A string containing the derived module path</returns>
         public static string GetModulePath(this NancyModule module, NancyContext context)
         {
             if (string.IsNullOrEmpty(module.ModulePath))
@@ -44,23 +50,30 @@ namespace Nancy.Extensions
                 return string.Empty;
             }
            
-            if (!module.ModulePath.Contains("{")        // module path with parameters
-                && !module.ModulePath.Contains("(?"))   // module path with regex
+            if (!IsParameterizedPath(module) && !IsRegexPath(module))   
             {
                 return module.ModulePath;
             }
-            var modulePath = module.ModulePath.StartsWith("/") ? module.ModulePath : "/" + module.ModulePath;
-            var segments = modulePath.Split(new[] {"/"}, StringSplitOptions.RemoveEmptyEntries);
 
-            var requestPath = context.Request.Path.StartsWith("/") ? context.Request.Path : "/" + context.Request.Path;
-            var requestPathSegments = requestPath.Split(new[] {"/"}, StringSplitOptions.RemoveEmptyEntries);
+            var segments = module.ModulePath.Split(new[] {"/"}, StringSplitOptions.RemoveEmptyEntries);
+            var requestPathSegments = context.Request.Path.Split(new[] {"/"}, StringSplitOptions.RemoveEmptyEntries);
 
-            if (requestPathSegments.Length<segments.Length)
+            if (requestPathSegments.Length < segments.Length)
             {
                 return string.Empty;
             }
-            
-            return "/"+string.Join("/",requestPathSegments.Take(segments.Length));
+
+            return string.Concat("/", string.Join("/", requestPathSegments.Take(segments.Length)));
+        }
+
+        static bool IsRegexPath(NancyModule module)
+        {
+            return module.ModulePath.Contains("(?");
+        }
+
+        static bool IsParameterizedPath(NancyModule module)
+        {
+            return module.ModulePath.Contains("{");
         }
     }
 }

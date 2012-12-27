@@ -1,66 +1,14 @@
-using System;
-using FakeItEasy;
-
 namespace Nancy.Tests.Unit
 {
+    using System;
+    using FakeItEasy;
     using Xunit;
     using Nancy.Extensions;
 
     public class ModulePathFixture
     {
-        class BasicModule : NancyModule
-        {
-        }
-
-        class EmptyPathModule: NancyModule
-        {
-            public EmptyPathModule():base("/")
-            {
-            }
-        }
-        class BasicModuleWithEmptyPath: NancyModule
-        {
-            public BasicModuleWithEmptyPath():base("")
-            {
-            }
-        }
-        class DefinedPathModule: NancyModule
-        {
-            public DefinedPathModule():base("/defined")
-            {
-            }
-        }
-        class RegexPathModule: NancyModule
-        {
-            public RegexPathModule() : base(@"/(?<path>[\w]+)")
-            {
-            }
-        }
-        class LongRegexPathModule: NancyModule
-        {
-            public LongRegexPathModule()
-                : base(@"/long/(?<path>[\w]+)/to/(?<resource>[\w]+)")
-            {
-            }
-        }
-
-        class ComplexRegexPathModule : NancyModule
-        {
-            public ComplexRegexPathModule()
-                : base(@"/(?<path>[\w]+)" + "/to" + @"/(?<resource>[\w]+)")
-            {
-            }
-        }
-        class ParameterizedPathModule : NancyModule
-        {
-            public ParameterizedPathModule()
-                : base(@"/{path}/to/{resource}/")
-            {
-            }
-        }
-
         [Fact]
-        public void should_get_undefined_module_path()
+        public void Should_get_undefined_module_path()
         {  
             // Given
             NancyModule module = new BasicModule();
@@ -74,7 +22,7 @@ namespace Nancy.Tests.Unit
             
         }
         [Fact]
-        public void should_get_empty_module_path()
+        public void Should_get_empty_module_path()
         {  
             // Given
             NancyModule module = new BasicModuleWithEmptyPath();
@@ -84,11 +32,11 @@ namespace Nancy.Tests.Unit
             var name = module.GetModulePath(context);
 
             // Then
-            name.ShouldEqual("");
+            name.ShouldEqual(string.Empty);
             
         }
         [Fact]
-        public void should_get_defined_path()
+        public void Should_get_defined_path()
         {
             // Given
 
@@ -108,7 +56,7 @@ namespace Nancy.Tests.Unit
             
         }
         [Fact]
-        public void should_evaluate_regex_path()
+        public void Should_evaluate_regex_path()
         {  
             // Given
 
@@ -129,7 +77,7 @@ namespace Nancy.Tests.Unit
             
         }
         [Fact]
-        public void should_evaluate_complex_regex_path()
+        public void Should_evaluate_complex_regex_path()
         {  
             // Given
 
@@ -151,7 +99,7 @@ namespace Nancy.Tests.Unit
         }
 
         [Fact]
-        public void should_evaluate_parameterized_path()
+        public void Should_evaluate_parameterized_path()
         {  
             // Given
 
@@ -171,8 +119,9 @@ namespace Nancy.Tests.Unit
             name.ShouldEqual("/path/to/resource");
             
         }
+
         [Fact]
-        public void should_return_empty_string_if_request_path_is_shorter_than_module_path()
+        public void Should_return_empty_string_if_request_path_is_shorter_than_module_path()
         {  
             // Given
 
@@ -191,6 +140,61 @@ namespace Nancy.Tests.Unit
             // Then
             name.ShouldEqual(string.Empty);
             
+        }
+
+        class BasicModule : NancyModule
+        {
+        }
+
+        class EmptyPathModule : NancyModule
+        {
+            public EmptyPathModule()
+                : base("/")
+            {
+            }
+        }
+        class BasicModuleWithEmptyPath : NancyModule
+        {
+            public BasicModuleWithEmptyPath()
+                : base("")
+            {
+            }
+        }
+        class DefinedPathModule : NancyModule
+        {
+            public DefinedPathModule()
+                : base("/defined")
+            {
+            }
+        }
+        class RegexPathModule : NancyModule
+        {
+            public RegexPathModule()
+                : base(@"/(?<path>[\w]+)")
+            {
+            }
+        }
+        class LongRegexPathModule : NancyModule
+        {
+            public LongRegexPathModule()
+                : base(@"/long/(?<path>[\w]+)/to/(?<resource>[\w]+)")
+            {
+            }
+        }
+
+        class ComplexRegexPathModule : NancyModule
+        {
+            public ComplexRegexPathModule()
+                : base(@"/(?<path>[\w]+)" + "/to" + @"/(?<resource>[\w]+)")
+            {
+            }
+        }
+        class ParameterizedPathModule : NancyModule
+        {
+            public ParameterizedPathModule()
+                : base(@"/{path}/to/{resource}/")
+            {
+            }
         }
     }
 }

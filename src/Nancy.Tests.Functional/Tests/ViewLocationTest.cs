@@ -1,11 +1,11 @@
-﻿using System;
-using Nancy.Bootstrapper;
-using Nancy.Testing;
-using Nancy.Tests.Functional.Modules;
-using Xunit;
-
-namespace Nancy.Tests.Functional.Tests
+﻿namespace Nancy.Tests.Functional.Tests
 {
+    using System;
+    using Nancy.Bootstrapper;
+    using Nancy.Testing;
+    using Nancy.Tests.Functional.Modules;
+    using Xunit;
+
     public class ViewLocationTest
     {
         readonly INancyBootstrapper bootstrapper;
