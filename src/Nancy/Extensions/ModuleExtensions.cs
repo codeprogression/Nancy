@@ -66,12 +66,12 @@ namespace Nancy.Extensions
             return string.Concat("/", string.Join("/", requestPathSegments.Take(segments.Length)));
         }
 
-        static bool IsRegexPath(NancyModule module)
+        private static bool IsRegexPath(NancyModule module)
         {
             return module.ModulePath.Contains("(?");
         }
 
-        static bool IsParameterizedPath(NancyModule module)
+        private static bool IsParameterizedPath(NancyModule module)
         {
             return module.ModulePath.Contains("{");
         }
